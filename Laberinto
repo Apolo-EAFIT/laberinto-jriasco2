@@ -1,0 +1,143 @@
+import java.util.Scanner;
+
+import javax.swing.plaf.synth.SynthSpinnerUI;
+
+public class Laberinto {
+
+	/**Teclado**/
+	Scanner consola;
+	
+	/**Atributos**/
+	private int tam;              //Tamaño de la Matriz
+	
+	private int cont;             //Contador de Paredes.
+	
+	private String cadena;        //Cadena de caracteres correspondiente a cada fila del laberinto
+	
+	/**Matriz**/
+	int lab[][];
+		
+	/**
+	 * Metodo Constructor
+	 */
+	public Laberinto(){
+		consola = new Scanner(System.in);
+		tam = 0;
+		cont = 0;
+		cadena = "";
+	}	
+	
+	/**
+	 * Metodo cargarLab. Encargado de cargar la matriz del laberinto
+	 */
+	public void cargarLab() {
+		
+		//Preguntamos tamaño de la matriz
+		System.out.print("Digite el tamaño de la matriz: ");
+		
+		//Definimos tamaño de la matriz
+		tam = consola.nextInt();
+		lab = new int [tam][tam];
+		
+		//Digitamos cada linea
+		System.out.println("Digite el laberinto: ");
+		
+		//x ? Ancho      y ? Alto      . ? Camino      # ? Pared
+		//Contruimos la Matriz
+		for (int x=0; x < tam; x++)                //Recorremos cada fila de la Matriz.
+		{
+			cadena = consola.next();               //Texto de cada fila de la Matriz.
+			for (int y=0; y < tam; y++)            //Recorremos cada columna de la Matriz.
+			{	
+				//Evalua si el caracter obtenido de la fila es camino o pared.
+				if(cadena.charAt(y)=='.'){
+					if((x==0 && y==0) || (x==tam && y==tam)){ //Marcamos visitadas la entrada - salida.
+						lab[x][x]=2;}
+					else{
+						lab[x][y] = 0;}
+				}
+				else
+					lab[x][y] = 1;
+			}
+		}
+	}
+	
+	/**
+	 * Metodo imprimirLab. Encargado de mostrar la matriz del laberinto.
+	 */
+	public void imprimirLab()
+	{
+		for (int x=0; x < tam; x++)                  //Recorremos la matriz en x.
+		{
+			for (int y=0; y < tam; y++)              //Recorremos la matriz en y.
+			{
+				System.out.print (lab[x][y]);        //Imprimimos cada posición de la matriz.
+				if ( x == tam )                      //Evaluamos si estamos al final de una linea
+					System.out.print("\n");          //Salto de linea.
+			}
+		}
+	}
+	
+	/**
+	 * Metodo avanzar. Encargado de recorrer la matriz en diferentes posiciones.
+	 * @param x, posición en el eje x.
+	 * @param y, posición en el eje y.
+	 */
+	public void avanzar(int x, int y)
+	{
+		if(mirar(x,y+1)) //abajo
+			avanzar (x,y+1);
+		
+		if(mirar(x,y-1)) //arriba
+			avanzar (x,y-1);
+		
+		if(mirar(x+1,y)) //derecha
+			avanzar (x+1,y);
+		
+		if(mirar(x+1,y)) //izquierda
+			avanzar (x+1,y);
+	}
+
+	/**
+	 * Metodo encagado de evaluar si ya fue recorrido.
+	 * @param x, posición en el eje x.
+	 * @param y, posición en el eje y.
+	 * @return False, en caso de no haberlo visto, 
+	 *         True, en caso de ya haberlo visto.
+	 */
+	public boolean mirar(int x, int y)
+	{
+		//Evaluamos los bordes de la matriz no se desborde
+		if((x>lab.length-1 || y>lab.length-1) || (x<0 || y<0)){
+			cont+=1;
+			return false;			
+		}
+		
+		//Evaluamos si la posicion no se a visitado
+	    else if(lab[x][y]!=2)
+		{
+			if(lab[x][y] == 0)		//Si es camino.
+			{
+				lab[x][y]=2;		//Cambiamos el valor de la posición despues de visitarla.
+				return true;
+			}
+			else{					//Si es pared.
+				cont+=1;
+				return false;
+			}
+		}		
+		return false;
+	}
+	
+	public int tamParedes()
+	{
+		return (cont-4)*9; //Restamos las paredes de la entrada - salida / Multiplicamos 3x3 AnchoxAlto por cada pared.
+	}
+	
+	public static void main(String[] args) {		
+		Laberinto miLaberinto = new Laberinto();
+		miLaberinto.cargarLab();
+		miLaberinto.avanzar(0, 0);		
+		System.out.println(miLaberinto.tamParedes());
+		}
+}
