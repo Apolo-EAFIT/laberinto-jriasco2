@@ -94,8 +94,8 @@ public class Laberinto {
 		if(mirar(x+1,y)) //derecha
 			avanzar (x+1,y);
 		
-		if(mirar(x+1,y)) //izquierda
-			avanzar (x+1,y);
+		if(mirar(x-1,y)) //izquierda
+			avanzar (x-1,y);
 	}
 
 	/**
@@ -131,13 +131,14 @@ public class Laberinto {
 	
 	public int tamParedes()
 	{
-		return (cont-4)*9; //Restamos las paredes de la entrada - salida / Multiplicamos 3x3 AnchoxAlto por cada pared.
+		return (cont-8)*9; //Restamos las paredes de la entrada - salida / Multiplicamos 3x3 AnchoxAlto por cada pared.
 	}
 	
 	public static void main(String[] args) {		
 		Laberinto miLaberinto = new Laberinto();
 		miLaberinto.cargarLab();
 		miLaberinto.avanzar(0, 0);		
+		miLaberinto.avanzar(miLaberinto.tam-1, miLaberinto.tam-1);
 		System.out.println(miLaberinto.tamParedes());
 		}
 }
